@@ -1,9 +1,9 @@
 import "./App.css";
-
+import WidgetWrapper from "./components/WidgetWrapper/WidgetWrapper";
 function App() {
   return (
-    <div className="App">
-      <h1 className="text-3xl font-bold underline">ZI WIDGET</h1>
+    <div className="zi__wrapper">
+      <WidgetWrapper />
     </div>
   );
 }

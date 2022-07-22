@@ -1,0 +1,6 @@
+.chatlayout__wrapper {
+  width: 95vw;
+  height: calc(100vh - 50px);
+  background: aliceblue;
+  margin: 0px 20px;
+}
