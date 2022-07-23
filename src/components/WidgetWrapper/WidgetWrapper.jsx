@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import { getUser, getLoadingState,switchScreen } from "../../store/reducer/widgetInfoReducer";
+import {
+  getUser,
+  getLoadingState,
+  switchScreen,
+} from "../../store/reducer/widgetInfoReducer";
 import FloaterIcon from "../FloaterIcon/FloaterIcon";
 import ChatLayout from "../../pages/ChatLayout/ChatLayout";
 export default function WidgetWrapper() {
@@ -18,10 +22,12 @@ export default function WidgetWrapper() {
     if (!isFirstClickMade.current) {
       isFirstClickMade.current = true;
     }
-    dispatch(switchScreen("chat"))
+    //trigger POSTMESSAGE to inform iframe about chat status
+    window.parent.postMessage({ isIconOpen: isIconOpen }, "*");
+    dispatch(switchScreen("chat"));
     setIcon((flag) => !flag);
   };
-  console.log(loadingStatus,"loadingStatus")
+  console.log(loadingStatus, "loadingStatus");
   return loadingStatus !== "success" ? (
     <div>Loading...</div>
   ) : (
