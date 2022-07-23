@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import CloseIcon from "../../assets/icons/svg/close.svg";
 import "./ChatLayout.css";
-
 import ChatMain from "../ChatMain";
 import ChatList from "../ChatList";
 export default function ChatLayout({ closeChat }) {
