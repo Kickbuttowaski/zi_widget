@@ -7,7 +7,7 @@ import {
 export default function Header() {
   const botData = useSelector((state) => getBotInfo(state));
   return (
-    <header className="flex flex-col items-start p-4 bg-white relative z-4 rounded-t-xl">
+    <header className="flex flex-col items-start p-4 text-primary_text rounded-t-xl">
       <img
         alt="user_avatar"
         height={60}

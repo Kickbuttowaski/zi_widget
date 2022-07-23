@@ -43,7 +43,7 @@ const TextData = ({ data }) => {
           className={`${chatBubbleCSS(
             data.lead,
             "wing_direction"
-          )} m-0 rounded-xl  px-8 py-2 bg-slate-200`}
+          )} m-0 rounded-xl  px-8 py-2 bg-bubblegray-light text-bubblegray-dark`}
           dangerouslySetInnerHTML={{ __html: data.text }}
         />
       </div>

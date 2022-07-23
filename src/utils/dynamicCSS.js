@@ -10,3 +10,12 @@ export const chatBubbleCSS = (isLead, type = "wrapper") => {
     return "rounded-bl-sm";
   }
 };
+
+export const setCSSVar = (cssObj)=>{
+    //set theme properties to css vars using document object
+    Object.keys(cssObj).map(propKey=>{
+      let formattedPropKey = "--zi_"+propKey
+      document.documentElement.style.setProperty(formattedPropKey, cssObj[propKey]);
+    })
+  
+}

@@ -1,9 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import API from "../../lib/axios";
+import {setCSSVar} from "../../utils/dynamicCSS"
 const initialState = {
   status: "idle",
   config: {},
-  activeScreen: "chat_list",
+  activeScreen: "chat",
 };
 
 export const widgetConfigSlice = createSlice({
@@ -20,6 +21,8 @@ export const widgetConfigSlice = createSlice({
         state.status = "pending";
       })
       .addCase(getUser.fulfilled, (state, action) => {
+        
+        setCSSVar(action.payload.settings.color)
         state.config = action.payload;
         state.status = "success";
       })
