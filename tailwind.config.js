@@ -4,6 +4,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors:{
+        primary:"rgb(130, 56, 244)"
+      },
       zIndex: {
         '1': '1',
         '4': '4',

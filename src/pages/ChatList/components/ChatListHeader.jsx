@@ -6,7 +6,7 @@ export default function Header() {
       <img
         alt="user_avatar"
         src="https://via.placeholder.com/60?text=WI"
-        className="rounded-full mx-4"
+        className="rounded-full mx-4 border-2 border-primary"
       />
       <div className="ml-4 mt-2 text-left">
         <p className="text-2xl">Hi, we are Blah Blah</p>

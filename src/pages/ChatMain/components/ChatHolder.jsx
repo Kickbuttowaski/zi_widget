@@ -18,7 +18,7 @@ const ChatAvatar = ({ name = "", img }) => {
   return (
     <img
       style={{ width: "29px", height: "29px" }}
-      className="rounded-full border-2 border-emerald-400"
+      className="rounded-full border-2 border-primary"
       title={name}
       src={img}
       alt="usr_avatar"

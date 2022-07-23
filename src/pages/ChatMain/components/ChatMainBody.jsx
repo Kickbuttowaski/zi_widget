@@ -13,7 +13,6 @@ export default function ChatMainBody() {
   useEffect(() => {
     dispatch(getMsgs());
   }, []);
-  console.log(msgData, "msgData");
   return (
     <div className="h-4/5 rounded-b-xl bg-white relative z-2 py-4 px-8 chatmain__headerwrapper">
       {isLoading ? (

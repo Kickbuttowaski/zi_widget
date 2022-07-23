@@ -9,13 +9,13 @@ export default function Header() {
       <div>
         <img
           alt="user_avatar"
-          src="https://via.placeholder.com/60?text=WI"
-          className="rounded-full mx-4"
+          src="https://via.placeholder.com/50?text=WI"
+          className="rounded-full mx-4 border-4 border-primary"
         />
       </div>
       <div className="text-left">
         <h4 className="font-bold">Username</h4>
-        <p className="font">you are chatting wiht</p>
+        <p className="font">you are chatting with </p>
       </div>
     </header>
   );
