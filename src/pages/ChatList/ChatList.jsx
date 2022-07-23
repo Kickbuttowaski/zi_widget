@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React from "react";
 import Header from "./components/ChatListHeader.jsx";
 import Footer from "./components/ChatListFooter.jsx";
 import ListItem from "./components/ListItem.jsx";

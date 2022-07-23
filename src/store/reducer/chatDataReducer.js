@@ -32,7 +32,7 @@ export const chatDataSlice = createSlice({
   },
 });
 
-export const {} = chatDataSlice.actions;
+//export const {} = chatDataSlice.actions;
 //DATA SELECTORS
 
 export const getLoadingState = (state) => {

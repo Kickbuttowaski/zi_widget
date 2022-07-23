@@ -3,24 +3,15 @@ import API from "../../lib/axios";
 const initialState = {
   status: "idle",
   config: {},
+  activeScreen: "chat",
 };
 
 export const widgetConfigSlice = createSlice({
   name: "widgetConfig",
   initialState,
   reducers: {
-    increment: (state) => {
-      // Redux Toolkit allows us to write "mutating" logic in reducers. It
-      // doesn't actually mutate the state because it uses the Immer library,
-      // which detects changes to a "draft state" and produces a brand new
-      // immutable state based off those changes
-      state.value += 1;
-    },
-    decrement: (state) => {
-      state.value -= 1;
-    },
-    incrementByAmount: (state, action) => {
-      state.value += action.payload;
+    switchScreen: (state, action) => {
+      state.activeScreen = action.payload;
     },
   },
   extraReducers(builder) {
@@ -38,7 +29,7 @@ export const widgetConfigSlice = createSlice({
   },
 });
 
-export const { increment, decrement, incrementByAmount } = widgetConfigSlice.actions;
+export const { switchScreen } = widgetConfigSlice.actions;
 //DATA SELECTORS
 export const getWelcomeMessage = (state) => {
   return state?.widgetConfig?.popupMessage?.message || "";
@@ -46,9 +37,12 @@ export const getWelcomeMessage = (state) => {
 export const getLoadingState = (state) => {
   return state.widgetConfig.status;
 };
-export const getBotInfo = (state)=>{
-  return state.widgetConfig.config.settings.bot
-}
+export const getBotInfo = (state) => {
+  return state.widgetConfig.config.settings.bot;
+};
+export const getCurrentScreen = (state) => {
+  return state.widgetConfig.activeScreen;
+};
 //API ACTION CREATORS
 export const getUser = createAsyncThunk("widgetConfig/getUser", async () => {
   const response = await API.get(

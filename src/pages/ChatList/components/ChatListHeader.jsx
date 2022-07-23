@@ -1,5 +1,4 @@
 import React from "react";
-import BackIcon from "../../../assets/icons/svg/back.svg";
 export default function Header() {
   return (
     <header className="flex flex-col items-start p-4 bg-white relative z-4 rounded-t-xl">
