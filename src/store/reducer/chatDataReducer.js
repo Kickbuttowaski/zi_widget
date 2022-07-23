@@ -18,6 +18,7 @@ export const chatDataSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(getMsgs.pending, (state, action) => {
+        state.isLoading = true;
         state.currChat = [];
         state.prevChat = [];
       })
@@ -32,6 +33,7 @@ export const chatDataSlice = createSlice({
         state.isLoading = false;
       })
       .addCase(getChannelList.pending, (state, action) => {
+        state.isChannelLoading = true;
         state.channelList = [];
       })
       .addCase(getChannelList.fulfilled, (state, action) => {

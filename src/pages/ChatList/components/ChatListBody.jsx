@@ -15,7 +15,6 @@ export default function ChatListBody() {
   useEffect(() => {
     dispatch(getChannelList());
   }, []);
-  console.log(channelList,'channelList')
   return (
     <div className="h-full border-b-8 border-orange-400 rounded-b-xl bg-white relative z-2 pt-1 px-8 chatlist__headerwrapper">
       <p className="text-left">your conversations</p>
