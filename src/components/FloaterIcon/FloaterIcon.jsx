@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getWelcomeMessage } from "../../store/reducer/widgetInfoReducer";
 export default function FloaterIcon({ onClick, showMSG }) {
   const welcomeMsg = useSelector((state) => getWelcomeMessage(state));
-
+  //render based on the welcome message status (true | false)
   return showMSG && welcomeMsg.length ? (
     <div
       className="mr-8 mb-8 p-4 shadow-lg flex border-b-8 border-orange-400 rounded-xl w-full bg-white cursor-pointer"

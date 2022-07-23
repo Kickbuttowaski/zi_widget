@@ -8,7 +8,6 @@ export default function ChatMain() {
     <div className="flex flex-col text-center h-full relative">
       <Header />
       <Body />
-
       <Footer />
     </div>
   );

@@ -29,7 +29,7 @@ export const widgetConfigSlice = createSlice({
         state.status = "pending";
       })
       .addCase(getUser.fulfilled, (state, action) => {
-        state.config = action.payload.config;
+        state.config = action.payload;
         state.status = "success";
       })
       .addCase(getUser.rejected, (state, action) => {
@@ -46,6 +46,9 @@ export const getWelcomeMessage = (state) => {
 export const getLoadingState = (state) => {
   return state.widgetConfig.status;
 };
+export const getBotInfo = (state)=>{
+  return state.widgetConfig.config.settings.bot
+}
 //API ACTION CREATORS
 export const getUser = createAsyncThunk("widgetConfig/getUser", async () => {
   const response = await API.get(

@@ -1,5 +1,6 @@
 import axios from "axios";
 
+//added hardcoded values for testing
 const AXIOS_CONFIG = {
   baseURL: `https://insentstaging.api.insent.ai`,
   headers: {

@@ -10,6 +10,7 @@ export default function WidgetWrapper() {
   const dispatch = useDispatch();
   useEffect(() => {
     //trigger widget config API
+    //to set intial configuration data for the chat
     dispatch(getUser());
   }, []);
   const [isIconOpen, setIcon] = useState(false);

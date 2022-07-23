@@ -11,6 +11,7 @@ export default function ChatMainBody() {
   const msgData = useSelector((state) => getMsgArr(state));
   const dispatch = useDispatch(useDispatch);
   useEffect(() => {
+    //trigger API to get the prev and new messages to be rendered
     dispatch(getMsgs());
   }, []);
   return (
@@ -18,9 +19,14 @@ export default function ChatMainBody() {
       {isLoading ? (
         <div>Loading...</div>
       ) : (
-        <div>
+        <div
+          onClick={() => {
+            //onclick for even delegation
+            //based on id or data-type
+          }}
+        >
           {msgData.map((obj) => {
-              return <ChatHolder data={obj} />;
+            return <ChatHolder data={obj} />;
           })}
         </div>
       )}

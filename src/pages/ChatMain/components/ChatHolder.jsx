@@ -1,8 +1,9 @@
 import React from "react";
 import { epochToReadable } from "../../../utils/timeFormatter";
+import { chatBubbleCSS } from "../../../utils/dynamicCSS";
 export default function ChatHolder({ data }) {
-  //type check to align msg position
   const renderChat = () => {
+    //based on msg type return components
     if ("text" in data) {
       return <TextData data={data} />;
     } else if ("buttons" in data) {
@@ -27,17 +28,22 @@ const ChatAvatar = ({ name = "", img }) => {
 };
 const TimeStamp = ({ time }) => {
   return (
-    <div className="text-sm text-center mb-2">{epochToReadable(time)}</div>
+    <div className="text-xs text-gray-400 italic text-center mb-2">
+      {epochToReadable(time)}
+    </div>
   );
 };
 const TextData = ({ data }) => {
-  const isBotCSSParent = !data.lead ? "flex w-full justify-start" : "flex w-full justify-end";
+  //type check to align chat bubble position (left | right)
   return (
-    <div className={isBotCSSParent}>
+    <div className={chatBubbleCSS(data.lead)}>
       <div className="flex gap-4 items-center mb-4">
         {!data.lead && <ChatAvatar name={data.name} img={data.img} />}
         <p
-          className="m-0 rounded-md rounded-bl-sm px-8 py-2 bg-slate-200"
+          className={`${chatBubbleCSS(
+            data.lead,
+            "wing_direction"
+          )} m-0 rounded-xl  px-8 py-2 bg-slate-200`}
           dangerouslySetInnerHTML={{ __html: data.text }}
         />
       </div>
@@ -46,6 +52,7 @@ const TextData = ({ data }) => {
 };
 
 const ChatButtons = ({ buttons }) => {
+  // need to add id's for each button
   return (
     <div className="w-full text-right">
       {buttons.fields.map((btnText) => {
