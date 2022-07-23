@@ -1,7 +1,7 @@
 import React from "react";
 import "./ChatMain.css"
-import Header from "./components/Header.jsx";
-import Footer from "./components/Footer.jsx";
+import Header from "./components/ChatMainHeader.jsx";
+import Footer from "./components/ChatMainFooter.jsx";
 export default function ChatMain() {
   return (
     <div className="flex flex-col text-center h-full relative">

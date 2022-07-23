@@ -3,7 +3,8 @@ import React from "react";
 import CloseIcon from "../../assets/icons/svg/close.svg";
 import "./ChatLayout.css";
 
-import ChatMain from "../ChatMain/ChatMain";
+import ChatMain from "../ChatMain";
+import ChatList from "../ChatList";
 export default function ChatLayout({ closeChat }) {
   return (
     <>
@@ -11,9 +12,9 @@ export default function ChatLayout({ closeChat }) {
         <img width={20} height={20} alt="close_icon" src={CloseIcon} />
       </div>
       <div className="shadow-lg rounded-md chatlayout__wrapper">
-        <ChatMain />
+        <ChatList />
       </div>
-      <div className="text-center">FOOTER</div>
+      <div className="text-center">Powered by ZI</div>
     </>
   );
 }
