@@ -1,15 +1,23 @@
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  getBotInfo,
+  switchScreen,
+} from "../../../store/reducer/widgetInfoReducer";
 export default function Header() {
+  const botData = useSelector((state) => getBotInfo(state));
   return (
     <header className="flex flex-col items-start p-4 bg-white relative z-4 rounded-t-xl">
       <img
         alt="user_avatar"
-        src="https://via.placeholder.com/60?text=WI"
+        height={60}
+        width={60}
+        src={botData.img}
         className="rounded-full mx-4 border-2 border-primary"
       />
       <div className="ml-4 mt-2 text-left">
-        <p className="text-2xl">Hi, we are Blah Blah</p>
-        <p className="text-md">some random description</p>
+        <p className="text-2xl">Hi, we are {botData.company || "Company"}</p>
+        <p className="text-md">{botData.description}</p>
       </div>
     </header>
   );

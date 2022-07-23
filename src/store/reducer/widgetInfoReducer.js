@@ -3,7 +3,7 @@ import API from "../../lib/axios";
 const initialState = {
   status: "idle",
   config: {},
-  activeScreen: "chat",
+  activeScreen: "chat_list",
 };
 
 export const widgetConfigSlice = createSlice({
