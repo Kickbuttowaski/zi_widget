@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import {
-  getUser,
-  getWelcomeMessage,
-  getLoadingState,
-} from "../../store/reducer/widgetInfo";
+import { getUser, getLoadingState } from "../../store/reducer/widgetInfoReducer";
 import FloaterIcon from "../FloaterIcon/FloaterIcon";
 import ChatLayout from "../../pages/ChatLayout/ChatLayout";
 export default function WidgetWrapper() {
+  const isFirstClickMade = useRef(false);
   const loadingStatus = useSelector((state) => getLoadingState(state));
-  const popupMessage = useSelector((state) => getWelcomeMessage(state));
   const dispatch = useDispatch();
   useEffect(() => {
     //trigger widget config API
     dispatch(getUser());
   }, []);
-  console.log(popupMessage, "popupMessage");
   const [isIconOpen, setIcon] = useState(false);
-  const toggleIcon = () => setIcon((flag) => !flag);
+  const toggleIcon = () => {
+    if (!isFirstClickMade.current) {
+      isFirstClickMade.current = true;
+    }
+    setIcon((flag) => !flag);
+  };
   return loadingStatus !== "success" ? (
     <div>Loading...</div>
   ) : (
@@ -26,7 +26,7 @@ export default function WidgetWrapper() {
       {isIconOpen ? (
         <ChatLayout closeChat={toggleIcon} />
       ) : (
-        <FloaterIcon onClick={toggleIcon} />
+        <FloaterIcon showMSG={!isFirstClickMade.current} onClick={toggleIcon} />
       )}
     </div>
   );

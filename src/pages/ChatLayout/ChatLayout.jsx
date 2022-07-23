@@ -11,7 +11,7 @@ export default function ChatLayout({ closeChat }) {
         <img width={20} height={20} alt="close_icon" src={CloseIcon} />
       </div>
       <div className="shadow-lg rounded-md chatlayout__wrapper">
-        <ChatList />
+        <ChatMain />
       </div>
       <div className="text-center">Powered by ZI</div>
     </>

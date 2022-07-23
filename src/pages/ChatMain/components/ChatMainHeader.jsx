@@ -2,7 +2,7 @@ import React from "react";
 import BackIcon from "../../../assets/icons/svg/back.svg";
 export default function Header() {
   return (
-    <header className="flex items-center p-4 drop-shadow-md bg-white relative z-4 rounded-b-xl">
+    <header className="flex items-center p-4 drop-shadow-md bg-white relative z-4 rounded-t-xl">
       <div>
         <img alt="back_nav" width={16} height={32} src={BackIcon} />
       </div>

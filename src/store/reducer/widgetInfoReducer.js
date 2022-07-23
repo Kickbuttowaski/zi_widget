@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import API from "../../lib/axios";
 const initialState = {
-  status: 'idle',
+  status: "idle",
   config: {},
 };
 
-export const counterSlice = createSlice({
-  name: "counter",
+export const widgetConfigSlice = createSlice({
+  name: "widgetConfig",
   initialState,
   reducers: {
     increment: (state) => {
@@ -26,32 +26,32 @@ export const counterSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(getUser.pending, (state, action) => {
-        state.isLoading = 'pending';
+        state.status = "pending";
       })
       .addCase(getUser.fulfilled, (state, action) => {
-        state.config = action.payload;
-        state.isLoading = 'success';
+        state.config = action.payload.config;
+        state.status = "success";
       })
       .addCase(getUser.rejected, (state, action) => {
-        state.isLoading = 'failed';
+        state.status = "failed";
       });
   },
 });
 
-export const { increment, decrement, incrementByAmount } = counterSlice.actions;
+export const { increment, decrement, incrementByAmount } = widgetConfigSlice.actions;
 //DATA SELECTORS
-export const getWelcomeMessage = (state)=>{
-    return state?.widgetInfo?.config?.popupMessage?.message || ''
-}
-export const getLoadingState = (state)=>{
-    return state.widgetInfo.status
-}
+export const getWelcomeMessage = (state) => {
+  return state?.widgetConfig?.popupMessage?.message || "";
+};
+export const getLoadingState = (state) => {
+  return state.widgetConfig.status;
+};
 //API ACTION CREATORS
-export const getUser = createAsyncThunk("widgetInfo/getUser", async () => {
+export const getUser = createAsyncThunk("widgetConfig/getUser", async () => {
   const response = await API.get(
     "/getuser?url=staging0.web-test.insent.ai%2Ffe-assignment"
   );
   return response.data;
 });
 
-export default counterSlice.reducer;
+export default widgetConfigSlice.reducer;

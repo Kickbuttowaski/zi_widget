@@ -1,7 +1,8 @@
-import widgetInfo from "./reducer/widgetInfo";
-
+import widgetInfoReducer from "./reducer/widgetInfoReducer";
+import chatDataReducer from "./reducer/chatDataReducer";
 const combineReducers = {
-  widgetInfo: widgetInfo,
+  widgetConfig: widgetInfoReducer,
+  chatData:chatDataReducer
 };
 
 export default combineReducers
