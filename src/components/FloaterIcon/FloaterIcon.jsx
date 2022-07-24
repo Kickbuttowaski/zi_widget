@@ -6,7 +6,7 @@ export default function FloaterIcon({ onClick, showMSG }) {
   //render based on the welcome message status (true | false)
   return showMSG && welcomeMsg.length ? (
     <div
-      className="mr-8 mb-8 p-4 shadow-lg flex border-b-8 border-orange-400 rounded-xl w-full bg-white cursor-pointer"
+      className="mr-8 mb-8 p-4 drop-shadow-lg flex border-b-8 border-primary rounded-xl w-full bg-white cursor-pointer"
       onClick={onClick}
     >
       <p
@@ -29,6 +29,7 @@ const Icon = ({ width = 60, height = 60 }) => {
       alt="chat_icon"
       src="https://via.placeholder.com/60?text=WI"
       className="rounded-full"
+      loading="lazy"
     />
   );
 };

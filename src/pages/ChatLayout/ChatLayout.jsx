@@ -12,7 +12,7 @@ export default function ChatLayout({ closeChat }) {
   return (
     <>
       <div className="flex justify-end mr-6 cursor-pointer" onClick={closeChat}>
-        <img width={20} height={20} alt="close_icon" src={CloseIcon} />
+        <img width={20} height={20} alt="close_icon" src={CloseIcon} loading="lazy"/>
       </div>
       <div className="shadow-lg rounded-md chatlayout__wrapper">
         {activeScreen === "chat" ? <ChatMain /> : <ChatList />}

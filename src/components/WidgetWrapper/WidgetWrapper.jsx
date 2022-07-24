@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Suspense } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
@@ -7,7 +7,10 @@ import {
   switchScreen,
 } from "../../store/reducer/widgetInfoReducer";
 import FloaterIcon from "../FloaterIcon/FloaterIcon";
-import ChatLayout from "../../pages/ChatLayout/ChatLayout";
+//import ChatLayout from "../../pages/ChatLayout/ChatLayout";
+const ChatLayout = React.lazy(() =>
+  import("../../pages/ChatLayout/ChatLayout")
+);
 export default function WidgetWrapper() {
   const isFirstClickMade = useRef(false);
   const loadingStatus = useSelector((state) => getLoadingState(state));
@@ -32,7 +35,9 @@ export default function WidgetWrapper() {
   ) : (
     <div>
       {isIconOpen ? (
-        <ChatLayout closeChat={toggleIcon} />
+        <Suspense fallback={<div>loading...</div>}>
+          <ChatLayout closeChat={toggleIcon} />
+        </Suspense>
       ) : (
         <FloaterIcon showMSG={!isFirstClickMade.current} onClick={toggleIcon} />
       )}

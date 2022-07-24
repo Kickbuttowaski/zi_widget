@@ -12,6 +12,7 @@ export default function Header() {
     <header className="flex items-center p-4 drop-shadow-md bg-white relative z-4 rounded-t-xl">
       <div>
         <img
+          loading="lazy"
           alt="back_nav"
           className="cursor-pointer"
           width={16}
@@ -24,6 +25,7 @@ export default function Header() {
       </div>
       <div>
         <img
+          loading="lazy"
           alt="user_avatar"
           width={50}
           height={50}

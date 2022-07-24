@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import {getBotInfo} from "../../../store/reducer/widgetInfoReducer"
+import { getBotInfo } from "../../../store/reducer/widgetInfoReducer";
 import { epochToReadable } from "../../../utils/timeFormatter";
 import { chatBubbleCSS } from "../../../utils/dynamicCSS";
 export default function ChatHolder({ data }) {
@@ -20,6 +20,7 @@ export default function ChatHolder({ data }) {
 const ChatAvatar = ({ name = "", img }) => {
   return (
     <img
+      loading="lazy"
       style={{ width: "29px", height: "29px" }}
       className="rounded-full border-2 border-primary"
       title={name}
@@ -36,12 +37,14 @@ const TimeStamp = ({ time }) => {
   );
 };
 const TextData = ({ data }) => {
-  const botData = useSelector((state) => getBotInfo(state))
+  const botData = useSelector((state) => getBotInfo(state));
   //type check to align chat bubble position (left | right)
   return (
     <div className={chatBubbleCSS(data.lead)}>
       <div className="flex gap-4 items-center mb-4">
-        {!data.lead && <ChatAvatar name={data.name || ""} img={data.img || botData.img} />}
+        {!data.lead && (
+          <ChatAvatar name={data.name || ""} img={data.img || botData.img} />
+        )}
         <p
           className={`${chatBubbleCSS(
             data.lead,

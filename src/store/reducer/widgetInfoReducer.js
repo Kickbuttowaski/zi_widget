@@ -44,7 +44,7 @@ export const widgetConfigSlice = createSlice({
 export const { switchScreen } = widgetConfigSlice.actions;
 //DATA SELECTORS
 export const getWelcomeMessage = (state) => {
-  return state?.widgetConfig?.popupMessage?.message || "";
+  return state?.widgetConfig?.config?.popupMessage?.message || "";
 };
 export const getLoadingState = (state) => {
   return state.widgetConfig.status;
