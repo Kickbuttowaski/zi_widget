@@ -8,7 +8,6 @@ export default function ChatList() {
     <div className="flex flex-col text-center h-full relative z-2 ">
       <Header />
       <Body />
-      {/* <Footer /> */}
       <WaveSVG />
     </div>
   );
@@ -16,20 +15,6 @@ export default function ChatList() {
 
 const WaveSVG = () => {
   return (
-    // <svg
-    //   id="visual"
-    //   viewBox="0 0 600 900"
-    //   xmlns="http://www.w3.org/2000/svg"
-    //   version="1.1"
-    //   className="absolute top-0 -z-1"
-    // >
-    //   <path
-    //     d="M0 514L50 473.7C100 433.3 200 352.7 300 307.3C400 262 500 252 550 247L600 242L600 0L550 0C500 0 400 0 300 0C200 0 100 0 50 0L0 0Z"
-    //     fill="#0066FF"
-    //     stroke-linecap="round"
-    //     stroke-linejoin="miter"
-    //   ></path>
-    // </svg>
     <svg
       id="svg"
       viewBox="0 0 500 349"

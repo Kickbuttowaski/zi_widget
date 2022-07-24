@@ -19,14 +19,9 @@ export default function ChatMainBody() {
       {isLoading ? (
         <div>Loading...</div>
       ) : (
-        <div
-          onClick={() => {
-            //onclick for event delegation
-            //based on id or data-type
-          }}
-        >
-          {msgData.map((obj) => {
-            return <ChatHolder data={obj} />;
+        <div>
+          {msgData.map((obj,i) => {
+            return <ChatHolder key={i} data={obj} />;
           })}
         </div>
       )}

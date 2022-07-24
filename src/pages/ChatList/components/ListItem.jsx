@@ -2,7 +2,7 @@ import React from "react";
 
 export default function ListItem({data}) {
   return (
-    <div className="flex w-full items-center rounded-lg shadow-lg p-2 bg-white mb-4">
+    <section data-cid={data.cid} className="flex w-full items-center rounded-lg shadow-lg p-2 bg-white mb-4 cursor-pointer">
       <img
         alt="user_avatar"
         width={50}
@@ -17,6 +17,6 @@ export default function ListItem({data}) {
         </div>
         <p className="text-xs " dangerouslySetInnerHTML={{__html:data.msg.text}} />
       </div>
-    </div>
+    </section>
   );
 }

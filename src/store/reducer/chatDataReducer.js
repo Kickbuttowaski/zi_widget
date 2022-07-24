@@ -10,6 +10,7 @@ const initialState = {
   prevChat: [],
   senderInfo: {},
   channelList: [],
+  activeChannelId: null,
 };
 
 export const chatDataSlice = createSlice({
@@ -23,8 +24,8 @@ export const chatDataSlice = createSlice({
         lead: true,
         text: `@${action.payload}`,
         time: Date.now(),
-      }
-      state.currChat = [...state.currChat,newMsg,...state.currChat]
+      };
+      state.currChat = [...state.currChat, newMsg, ...state.currChat];
     },
   },
   extraReducers(builder) {
@@ -38,6 +39,7 @@ export const chatDataSlice = createSlice({
         state.senderInfo = action.payload.sender;
         state.currChat = action.payload.messages;
         state.prevChat = action.payload.prevMessages;
+        state.activeChannelId = action.payload.channelId;
         state.isLoading = false;
       })
       .addCase(getMsgs.rejected, (state, action) => {
@@ -71,11 +73,16 @@ export const getChannelListArr = (state) => {
   return state.chatData.channelList;
 };
 //API ACTION CREATORS
-export const getMsgs = createAsyncThunk("chatData/getMsg", async () => {
-  let formattedURL = ENDPOINT.GET_MESSAGE + getUserId().channelId;
-  const response = await API.get(formattedURL);
-  return response.data;
-});
+export const getMsgs = createAsyncThunk(
+  "chatData/getMsg",
+  async (cid = undefined, { getState }) => {
+    cid =
+      cid === undefined ? getState().widgetConfig.config.channelId : cid;
+    let formattedURL = ENDPOINT.GET_MESSAGE + cid;
+    const response = await API.get(formattedURL);
+    return response.data;
+  }
+);
 export const getChannelList = createAsyncThunk(
   "chatData/getChannelList",
   async () => {
@@ -83,10 +90,14 @@ export const getChannelList = createAsyncThunk(
     return response.data;
   }
 );
-export const postReadStatus = createAsyncThunk("chatData/read", async () => {
-  let formattedURL = ENDPOINT.GET_MESSAGE + getUserId().channelId + "/read";
-  const response = await API.get(formattedURL);
-  return response.data;
-});
+export const postReadStatus = createAsyncThunk(
+  "chatData/read",
+  async (undefined, { getState }) => {
+    let cid = getState().widgetConfig.config.channelId;
+    let formattedURL = ENDPOINT.GET_MESSAGE + cid + "/read";
+    const response = await API.get(formattedURL);
+    return response.data;
+  }
+);
 
 export default chatDataSlice.reducer;
