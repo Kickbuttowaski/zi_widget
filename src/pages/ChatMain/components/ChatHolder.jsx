@@ -1,6 +1,12 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { getChannelRef } from "../../../store/reducer/pusherReducer";
 import { getBotInfo } from "../../../store/reducer/widgetInfoReducer";
+import {
+  getClientmsgSocketData,
+  postDeliveredStatus,
+  postReadStatus,
+} from "../../../store/reducer/chatDataReducer";
 import { epochToReadable } from "../../../utils/timeFormatter";
 import { chatBubbleCSS } from "../../../utils/dynamicCSS";
 export default function ChatHolder({ data }) {
@@ -59,13 +65,29 @@ const TextData = ({ data }) => {
 
 const ChatButtons = ({ buttons }) => {
   // need to add id's for each button
+  const dispatch = useDispatch();
+  const channelRef = useSelector((state) => getChannelRef(state));
+  const socketData = useSelector((state) => getClientmsgSocketData(state));
+  const handleClick = (e) => {
+    let dataKey = e.target.getAttribute("data-key");
+
+    if (dataKey) {
+      let dataLabel = e.target.getAttribute("data-label");
+      let formattedPayload = { ...socketData };
+      formattedPayload["message"][dataKey] = [dataLabel];
+      console.log(formattedPayload, "formattedPayload");
+      channelRef.trigger("client-widget-message", formattedPayload);
+    }
+  };
   return (
-    <div className="w-full text-right">
+    <div className="w-full text-right" onClick={handleClick}>
       {buttons.fields.map((btnText) => {
         return (
           <button
             className="text-left text-sm border-solid border border-blue-600 px-4 py-1 rounded-lg max-w-215px mr-2"
             key={btnText}
+            data-key={buttons.key}
+            data-label={btnText}
           >
             {btnText}
           </button>

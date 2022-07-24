@@ -7,7 +7,6 @@ const initialState = {
   status: "idle",
   config: {},
   activeScreen: "chat",
-  pusherConfig: null,
 };
 
 export const widgetConfigSlice = createSlice({
@@ -16,9 +15,6 @@ export const widgetConfigSlice = createSlice({
   reducers: {
     switchScreen: (state, action) => {
       state.activeScreen = action.payload;
-    },
-    updateSocketData: (state, action) => {
-      state.pusherConfig = action.payload;
     },
   },
   extraReducers(builder) {
@@ -40,15 +36,6 @@ export const widgetConfigSlice = createSlice({
       })
       .addCase(getUser.rejected, (state, action) => {
         state.status = "failed";
-      })
-      .addCase(getPusherAuth.pending, (state, action) => {
-        console.log(action.payload);
-      })
-      .addCase(getPusherAuth.fulfilled, (state, action) => {
-        state.pusherConfig = action.payload;
-      })
-      .addCase(getPusherAuth.rejected, (state, action) => {
-        console.log(action.payload);
       });
   },
 });
@@ -76,23 +63,11 @@ export const getSubscriptionInfo = (state) => {
 export const getCurrentScreen = (state) => {
   return state.widgetConfig.activeScreen;
 };
-export const getPusherConfig = (state) => {
-  return state.widgetConfig.pusherConfig;
-};
+
 //API ACTION CREATORS
 export const getUser = createAsyncThunk("widgetConfig/getUser", async () => {
   const response = await API.get(ENDPOINT.GET_USER);
   return response.data;
 });
-export const getPusherAuth = createAsyncThunk(
-  "widgetConfig/pusher",
-  async (payload, { getState }) => {
-    let userId = getState().widgetConfig.config.user.id;
-    const response = await API.post(
-      ENDPOINT.GET_PUSHER_AUTH + userId,
-      new URLSearchParams(payload)
-    );
-    return response.data;
-  }
-);
+
 export default widgetConfigSlice.reducer;

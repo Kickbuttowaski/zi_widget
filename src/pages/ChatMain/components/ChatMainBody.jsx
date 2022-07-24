@@ -6,12 +6,15 @@ import {
   getMsgs,
   getMsgArr,
   postReadStatus,
+  postDeliveredStatus,
   getClientmsgSocketData,
+  appendEndConvo,
 } from "../../../store/reducer/chatDataReducer";
 import { getSubscriptionInfo } from "../../../store/reducer/widgetInfoReducer";
+import { setChannelRef } from "../../../store/reducer/pusherReducer";
 import ChatHolder from "./ChatHolder";
 import { LS } from "../../../utils/authHeaders";
-const USER_ID = JSON.parse(LS.get("zi_config")).userId
+const USER_ID = JSON.parse(LS.get("zi_config")).userId;
 const pusher = new Pusher("67bb469433cb732caa7a", {
   cluster: "mt1",
   channelAuthorization: {
@@ -33,19 +36,28 @@ export default function ChatMainBody() {
     dispatch(getMsgs());
   }, []);
   useEffect(() => {
-    if (subscriptionChannel !=null && !isLoading) {
-      //dispatch(postReadStatus());
-      console.log("CONNECT")
+    if (subscriptionChannel != null && !isLoading) {
       initPusher(subscriptionChannel);
     }
-  }, [subscriptionChannel, isLoading]);
+  }, [isLoading]);
+  useEffect(() => {
+    dispatch(postReadStatus());
+  }, [msgData.length]);
   const initPusher = ({ channel_name, userId }) => {
     const channel = pusher.subscribe(channel_name);
     channel.bind("pusher:subscription_succeeded", () => {
       //triggers can be used only after successful subscription
-      // socketPayload['senderId'] = USER_ID
-      // channel.trigger("client-widget-message", socketPayload);
-    })
+      dispatch(setChannelRef(channel));
+      //socketPayload["senderId"] = USER_ID
+      console.log(socketPayload, "socketPayload");
+      channel.trigger("client-widget-message", socketPayload);
+      channel.bind("server-message", (data) => {
+        console.log(data, "server-message");
+        dispatch(postReadStatus());
+        dispatch(appendEndConvo(data));
+        dispatch(postDeliveredStatus());
+      });
+    });
     pusher.connection.bind("error", (err) => {
       console.log(err, "connection error");
     });
@@ -53,12 +65,10 @@ export default function ChatMainBody() {
       console.log(err, "connection failed");
     });
     pusher.connection.bind("connected", (data) => {
-      console.log("Pusher connected", channel_name);    
-      channel.bind("server-message", (data) => {
-        console.log(data, "server-message");
-      });
+      console.log("Pusher connected", channel_name);
     });
   };
+
   return (
     <div className="h-4/5 rounded-b-xl bg-white relative z-2 py-4 px-4 chatmain__headerwrapper overflow-y-auto">
       {isLoading ? (

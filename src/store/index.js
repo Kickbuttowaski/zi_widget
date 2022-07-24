@@ -3,5 +3,5 @@ import combineReducers from './combineReducer'
 import logger from 'redux-logger'
 export const store = configureStore({
   reducer: {...combineReducers},
- // middleware:(getDefaultMiddleware)=>getDefaultMiddleware().concat(logger)
+ middleware:(getDefaultMiddleware)=>getDefaultMiddleware({serializableCheck:false})
 })

@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import API from "../../lib/axios";
 import ENDPOINT from "../../data/endpoints";
-import { getUserId } from "../../utils/authHeaders";
+import { LS } from "../../utils/authHeaders";
 const initialState = {
   status: "idle",
   isLoading: true,
@@ -19,14 +19,10 @@ export const chatDataSlice = createSlice({
   initialState,
   reducers: {
     appendEndConvo: (state, action) => {
-      //formatting currChat with newMsg(bot name) and re-add the currChat again to start a new chat
-      let newMsg = {
-        attachments: [],
-        lead: true,
-        text: `@${action.payload}`,
-        time: Date.now(),
-      };
-      state.currChat = [...state.currChat, newMsg, ...state.currChat];
+ 
+      state.prevChat.push(...state.chatObj.messages)
+      state.currChat = action.payload.messages
+      state.chatObj = action.payload
     },
   },
   extraReducers(builder) {
@@ -42,6 +38,7 @@ export const chatDataSlice = createSlice({
         state.currChat = action.payload.messages || [];
         state.prevChat = action.payload.prevMessages || [];
         state.activeChannelId = action.payload.channelId;
+        state.user_id = action.payload.user_id
         state.isLoading = false;
       })
       .addCase(getMsgs.rejected, (state, action) => {
@@ -73,8 +70,8 @@ export const getMsgArr = (state) => {
   if (state.chatData.chatObj === null) return [];
 
   return [
-    ...state.chatData.chatObj.prevMessages,
-    ...state.chatData.chatObj.messages,
+    ...state.chatData.prevChat,
+    ...state.chatData.currChat,
   ];
 };
 export const getClientmsgSocketData = (state) => {
@@ -83,6 +80,7 @@ export const getClientmsgSocketData = (state) => {
   return {
     channelName: channelId,
     message: { lastMessageTimeStamp: messageTimestamp },
+    senderId:state.chatData.user_id
   };
 };
 export const getChannelListArr = (state) => {
@@ -93,8 +91,10 @@ export const getMsgs = createAsyncThunk(
   "chatData/getMsg",
   async (cid = undefined, { getState }) => {
     cid = cid === undefined ? getState().widgetConfig.config.channelId : cid;
+    let uid = getState().widgetConfig.config.user.id
     let formattedURL = ENDPOINT.GET_MESSAGE + cid;
     const response = await API.get(formattedURL);
+    response.data['user_id'] = uid
     return response.data;
   }
 );
@@ -109,7 +109,20 @@ export const postReadStatus = createAsyncThunk(
   "chatData/read",
   async (undefined, { getState }) => {
     let cid = getState().widgetConfig.config.channelId;
-    let formattedURL = ENDPOINT.GET_MESSAGE + cid + "/read";
+    let isUnread = getState().chatData.chatObj.unread;
+    if (isUnread) {
+      let formattedURL = ENDPOINT.GET_MESSAGE + cid + "/read";
+      const response = await API.post(formattedURL);
+      return response.data;
+    }
+  }
+);
+export const postDeliveredStatus = createAsyncThunk(
+  "chatData/delivered",
+  async (undefined, { getState }) => {
+    let cid = getState().widgetConfig.config.channelId;
+
+    let formattedURL = ENDPOINT.GET_MESSAGE + cid + "/delivered";
     const response = await API.post(formattedURL);
     return response.data;
   }
