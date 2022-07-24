@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import API from "../../lib/axios";
 import {setCSSVar} from "../../utils/dynamicCSS"
+import {LS} from "../../utils/authHeaders"
 const initialState = {
   status: "idle",
   config: {},
@@ -21,8 +22,12 @@ export const widgetConfigSlice = createSlice({
         state.status = "pending";
       })
       .addCase(getUser.fulfilled, (state, action) => {
-        
+         //update local storage with channel and user ID
+        let userData = {channelId:action.payload.channelId,userId:action.payload.user.id}
+        LS.set('zi_config',JSON.stringify(userData))
+         //set CSS var values
         setCSSVar(action.payload.settings.color)
+
         state.config = action.payload;
         state.status = "success";
       })
@@ -51,6 +56,7 @@ export const getUser = createAsyncThunk("widgetConfig/getUser", async () => {
   const response = await API.get(
     "/getuser?url=staging0.web-test.insent.ai%2Ffe-assignment"
   );
+  
   return response.data;
 });
 

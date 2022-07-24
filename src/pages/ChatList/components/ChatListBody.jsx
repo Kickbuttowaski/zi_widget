@@ -18,7 +18,13 @@ export default function ChatListBody() {
   return (
     <div className="h-full border-b-8 border-primary rounded-b-xl pt-1 px-8 chatlist__headerwrapper">
       <p className="text-left">your conversations</p>
-      {isLoading ? <div>Loading...</div> : channelList.map((obj)=><ListItem data={obj}/>)}
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : channelList.length ? (
+        channelList.map((obj) => <ListItem data={obj} />)
+      ) : (
+        <div>No active conversations</div>
+      )}
     </div>
   );
 }
