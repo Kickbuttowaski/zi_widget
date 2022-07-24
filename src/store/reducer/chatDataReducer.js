@@ -15,7 +15,18 @@ const initialState = {
 export const chatDataSlice = createSlice({
   name: "chatData",
   initialState,
-  reducers: {},
+  reducers: {
+    appendEndConvo: (state, action) => {
+      //formatting currChat with newMsg(bot name) and re-add the currChat again to start a new chat
+      let newMsg = {
+        attachments: [],
+        lead: true,
+        text: `@${action.payload}`,
+        time: Date.now(),
+      }
+      state.currChat = [...state.currChat,newMsg,...state.currChat]
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(getMsgs.pending, (state, action) => {
@@ -38,7 +49,7 @@ export const chatDataSlice = createSlice({
         state.channelList = [];
       })
       .addCase(getChannelList.fulfilled, (state, action) => {
-        state.channelList = action.payload
+        state.channelList = action.payload;
         state.isChannelLoading = false;
       })
       .addCase(getChannelList.rejected, (state, action) => {
@@ -47,7 +58,7 @@ export const chatDataSlice = createSlice({
   },
 });
 
-//export const {} = chatDataSlice.actions;
+export const { appendEndConvo } = chatDataSlice.actions;
 //DATA SELECTORS
 
 export const getLoadingState = (state, key = "isLoading") => {
@@ -61,7 +72,8 @@ export const getChannelListArr = (state) => {
 };
 //API ACTION CREATORS
 export const getMsgs = createAsyncThunk("chatData/getMsg", async () => {
-  const response = await API.get(ENDPOINT.GET_MESSAGE+getUserId().channelId);
+  let formattedURL = ENDPOINT.GET_MESSAGE + getUserId().channelId;
+  const response = await API.get(formattedURL);
   return response.data;
 });
 export const getChannelList = createAsyncThunk(
@@ -71,5 +83,10 @@ export const getChannelList = createAsyncThunk(
     return response.data;
   }
 );
+export const postReadStatus = createAsyncThunk("chatData/read", async () => {
+  let formattedURL = ENDPOINT.GET_MESSAGE + getUserId().channelId + "/read";
+  const response = await API.get(formattedURL);
+  return response.data;
+});
 
 export default chatDataSlice.reducer;
