@@ -7,7 +7,7 @@ import {
   switchScreen,
 } from "../../store/reducer/widgetInfoReducer";
 import FloaterIcon from "../FloaterIcon/FloaterIcon";
-//import ChatLayout from "../../pages/ChatLayout/ChatLayout";
+import WidgetIcon from "../DesignComponents/WidgetIcon";
 const ChatLayout = React.lazy(() =>
   import("../../pages/ChatLayout/ChatLayout")
 );
@@ -31,7 +31,9 @@ export default function WidgetWrapper() {
     setIcon((flag) => !flag);
   };
   return loadingStatus !== "success" ? (
-    <div>Loading...</div>
+    <div className="blur-sm">
+      <WidgetIcon />
+    </div>
   ) : (
     <div>
       {isIconOpen ? (

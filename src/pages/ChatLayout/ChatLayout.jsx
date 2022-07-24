@@ -5,13 +5,13 @@ import CloseIcon from "../../assets/icons/svg/close.svg";
 import ChatMain from "../ChatMain";
 import ChatList from "../ChatList";
 import { getCurrentScreen } from "../../store/reducer/widgetInfoReducer";
-import { useSelector } from "react-redux/es/exports";
+import { useSelector } from "react-redux";
 
 export default function ChatLayout({ closeChat }) {
   const activeScreen = useSelector((state) => getCurrentScreen(state));
   return (
     <>
-      <div className="flex justify-end mr-6 cursor-pointer" onClick={closeChat}>
+      <div className="flex justify-end mr-6 cursor-pointer floater_wrapper" onClick={closeChat}>
         <img width={20} height={20} alt="close_icon" src={CloseIcon} loading="lazy"/>
       </div>
       <div className="shadow-lg rounded-md chatlayout__wrapper">
