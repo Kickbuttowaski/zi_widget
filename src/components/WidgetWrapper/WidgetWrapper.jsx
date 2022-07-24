@@ -6,20 +6,27 @@ import {
   getLoadingState,
   switchScreen,
 } from "../../store/reducer/widgetInfoReducer";
+
 import FloaterIcon from "../FloaterIcon/FloaterIcon";
 import WidgetIcon from "../DesignComponents/WidgetIcon";
 const ChatLayout = React.lazy(() =>
   import("../../pages/ChatLayout/ChatLayout")
 );
+
 export default function WidgetWrapper() {
   const isFirstClickMade = useRef(false);
   const loadingStatus = useSelector((state) => getLoadingState(state));
+
   const dispatch = useDispatch();
   useEffect(() => {
     //trigger widget config API
     //to set intial configuration data for the chat
     dispatch(getUser());
   }, []);
+
+
+
+
   const [isIconOpen, setIcon] = useState(false);
   const toggleIcon = () => {
     if (!isFirstClickMade.current) {

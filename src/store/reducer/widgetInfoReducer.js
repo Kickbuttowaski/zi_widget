@@ -7,6 +7,7 @@ const initialState = {
   status: "idle",
   config: {},
   activeScreen: "chat",
+  pusherConfig: null,
 };
 
 export const widgetConfigSlice = createSlice({
@@ -15,6 +16,9 @@ export const widgetConfigSlice = createSlice({
   reducers: {
     switchScreen: (state, action) => {
       state.activeScreen = action.payload;
+    },
+    updateSocketData: (state, action) => {
+      state.pusherConfig = action.payload;
     },
   },
   extraReducers(builder) {
@@ -31,12 +35,20 @@ export const widgetConfigSlice = createSlice({
         LS.set("zi_config", JSON.stringify(userData));
         //set CSS var values
         setCSSVar(action.payload.settings.color);
-
-        state.config = action.payload;
         state.status = "success";
+        state.config = action.payload;
       })
       .addCase(getUser.rejected, (state, action) => {
         state.status = "failed";
+      })
+      .addCase(getPusherAuth.pending, (state, action) => {
+        console.log(action.payload);
+      })
+      .addCase(getPusherAuth.fulfilled, (state, action) => {
+        state.pusherConfig = action.payload;
+      })
+      .addCase(getPusherAuth.rejected, (state, action) => {
+        console.log(action.payload);
       });
   },
 });
@@ -52,14 +64,35 @@ export const getLoadingState = (state) => {
 export const getBotInfo = (state) => {
   return state.widgetConfig.config.settings.bot;
 };
+export const getSubscriptionInfo = (state) => {
+  if ("user" in state.widgetConfig.config) {
+    return {
+      channel_name: state.widgetConfig.config.subscriptionChannel,
+      userId: state.widgetConfig.config.user.id,
+    };
+  }
+  return null;
+};
 export const getCurrentScreen = (state) => {
   return state.widgetConfig.activeScreen;
+};
+export const getPusherConfig = (state) => {
+  return state.widgetConfig.pusherConfig;
 };
 //API ACTION CREATORS
 export const getUser = createAsyncThunk("widgetConfig/getUser", async () => {
   const response = await API.get(ENDPOINT.GET_USER);
-
   return response.data;
 });
-
+export const getPusherAuth = createAsyncThunk(
+  "widgetConfig/pusher",
+  async (payload, { getState }) => {
+    let userId = getState().widgetConfig.config.user.id;
+    const response = await API.post(
+      ENDPOINT.GET_PUSHER_AUTH + userId,
+      new URLSearchParams(payload)
+    );
+    return response.data;
+  }
+);
 export default widgetConfigSlice.reducer;
