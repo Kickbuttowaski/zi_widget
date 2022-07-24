@@ -2,7 +2,7 @@ import React from "react";
 
 export default function ListItem({data}) {
   return (
-    <div className="flex w-full items-center rounded-lg shadow-lg p-2">
+    <div className="flex w-full items-center rounded-lg shadow-lg p-2 bg-white">
       <img
         alt="user_avatar"
         width={50}

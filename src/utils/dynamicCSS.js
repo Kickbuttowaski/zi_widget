@@ -5,9 +5,9 @@ export const chatBubbleCSS = (isLead, type = "wrapper") => {
   } else if (!isLead && type === "wrapper") {
     return "flex w-full justify-start";
   } else if (isLead && type === "wing_direction") {
-    return "rounded-br-sm";
+    return "rounded-br-sm bg-primary text-primary_text";
   } else if (!isLead && type === "wing_direction") {
-    return "rounded-bl-sm";
+    return "rounded-bl-sm bg-bubblegray-light text-bubblegray-dark";
   }
 };
 
