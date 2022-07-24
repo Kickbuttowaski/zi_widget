@@ -6,8 +6,8 @@ const AXIOS_CONFIG = {
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
-    channelid: "private-9dX8bzfTJPLxRPmv816585760723431658576075381",
-    userid: "9dX8bzfTJPLxRPmv81658576072343",
+    // channelid: "private-9dX8bzfTJPLxRPmv816585760723431658576075381",
+    // userid: "9dX8bzfTJPLxRPmv81658576072343",
   },
 };
 
@@ -22,10 +22,9 @@ axiosClient.interceptors.request.use(
       throw new axios.Cancel("Project key missing");
     }
     if (userIds != null) {
-      // config.headers.channelid = userIds.channelId;
-      // config.headers.userid = userIds.userId;
+      config.headers.channelid = userIds.channelId;
+      config.headers.userid = userIds.userId;
     }
-    console.log(projectKey);
     config.headers.authorization = `Bearer ${projectKey}`;
     return config;
   },

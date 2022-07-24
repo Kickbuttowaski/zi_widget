@@ -9,7 +9,6 @@ import { useSelector } from "react-redux/es/exports";
 
 export default function ChatLayout({ closeChat }) {
   const activeScreen = useSelector((state) => getCurrentScreen(state));
-  console.log(activeScreen,'activeScreen')
   return (
     <>
       <div className="flex justify-end mr-6 cursor-pointer" onClick={closeChat}>

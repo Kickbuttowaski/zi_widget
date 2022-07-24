@@ -15,13 +15,13 @@ export default function ChatMainBody() {
     dispatch(getMsgs());
   }, []);
   return (
-    <div className="h-4/5 rounded-b-xl bg-white relative z-2 py-4 px-8 chatmain__headerwrapper">
+    <div className="h-4/5 rounded-b-xl bg-white relative z-2 py-4 px-8 chatmain__headerwrapper overflow-y-auto">
       {isLoading ? (
         <div>Loading...</div>
       ) : (
         <div
           onClick={() => {
-            //onclick for even delegation
+            //onclick for event delegation
             //based on id or data-type
           }}
         >

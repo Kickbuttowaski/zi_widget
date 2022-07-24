@@ -27,7 +27,6 @@ export default function WidgetWrapper() {
     dispatch(switchScreen("chat"));
     setIcon((flag) => !flag);
   };
-  console.log(loadingStatus, "loadingStatus");
   return loadingStatus !== "success" ? (
     <div>Loading...</div>
   ) : (

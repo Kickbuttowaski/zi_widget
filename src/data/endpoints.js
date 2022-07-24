@@ -1,6 +1,6 @@
 const ENDPOINT = {
-  GET_MESSAGE:
-    "/user/channels/private-9dX8bzfTJPLxRPmv816585760723431658576075381",
+  GET_MESSAGE: "/user/channels/",
   GET_CHANNELS_LIST: "/user/channels",
+  GET_USER: "/getuser?url=staging0.web-test.insent.ai%2Ffe-assignment",
 };
 export default ENDPOINT;

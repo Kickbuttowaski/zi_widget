@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import API from "../../lib/axios";
 import ENDPOINT from "../../data/endpoints";
+import { getUserId } from "../../utils/authHeaders";
 const initialState = {
   status: "idle",
   isLoading: true,
@@ -60,7 +61,7 @@ export const getChannelListArr = (state) => {
 };
 //API ACTION CREATORS
 export const getMsgs = createAsyncThunk("chatData/getMsg", async () => {
-  const response = await API.get(ENDPOINT.GET_MESSAGE);
+  const response = await API.get(ENDPOINT.GET_MESSAGE+getUserId().channelId);
   return response.data;
 });
 export const getChannelList = createAsyncThunk(

@@ -16,7 +16,7 @@ export default function ChatListBody() {
     dispatch(getChannelList());
   }, []);
   return (
-    <div className="h-full border-b-8 border-primary rounded-b-xl pt-1 px-8 chatlist__headerwrapper">
+    <div className="h-full border-b-8 border-primary rounded-b-xl pt-1 px-8 chatlist__headerwrapper overflow-y-auto">
       <p className="text-left">your conversations</p>
       {isLoading ? (
         <div>Loading...</div>
