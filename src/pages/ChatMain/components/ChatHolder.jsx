@@ -57,7 +57,7 @@ const TextData = ({ data }) => {
           className={`${chatBubbleCSS(
             data.lead,
             "wing_direction"
-          )} m-0 rounded-xl  px-8 py-2`}
+          )} m-0 rounded-xl  px-8 py-2 text-left`}
           dangerouslySetInnerHTML={{ __html: data.text }}
         />
       </div>
@@ -67,7 +67,6 @@ const TextData = ({ data }) => {
 const ChatInput = ({ data }) => {
   const [isDisabled, setDisabled] = useState(false);
   const [error, setError] = useState(null);
-  const dispatch = useDispatch();
   const channelRef = useSelector((state) => getChannelRef(state));
   const socketData = useSelector((state) => getClientmsgSocketData(state));
   let inputAttr = data[0];
@@ -76,10 +75,9 @@ const ChatInput = ({ data }) => {
     let dataKey = ele.getAttribute("data-key");
     let dataValue = ele.value;
     if (ele && dataKey) {
-      if (validateInput(dataValue,dataKey)) {
-        let formattedPayload = { ...socketData };
-        formattedPayload["message"][dataKey] = dataValue;
-        channelRef.trigger("client-widget-message", formattedPayload);
+      if (validateInput(dataValue, dataKey)) {
+        socketData["message"][dataKey] = dataValue;
+        channelRef.trigger("client-widget-message", socketData);
         ele.removeAttribute("id");
         setDisabled(true);
         setError(null);
@@ -95,10 +93,12 @@ const ChatInput = ({ data }) => {
           className={`${chatBubbleCSS(
             false,
             "wing_direction"
-          )} m-0 rounded-xl  px-8 py-2  w-4/5`}
+          )} m-0 rounded-xl  px-8 py-2 w-full sm:w-4/5`}
         >
           <p className="font-bold text-md text-left">{inputAttr.name}</p>
-          {error != null && <p className="text-red-400 text-sm text-left">{error}</p>}
+          {error != null && (
+            <p className="text-red-400 text-sm text-left">{error}</p>
+          )}
           <div className="flex h-10 bg-white border-gray-600 rounded-md pl-4">
             <input
               placeholder={`Enter your ${inputAttr.name.toLowerCase()}`}
@@ -140,10 +140,9 @@ const ChatButtons = ({ buttons }) => {
           img: "https://staging-uploads.insent.ai/insentstaging/logo-insentstaging-1657874092041?1657874092120",
         })
       );
-      let formattedPayload = { ...socketData };
-      formattedPayload["message"][dataKey] = [dataLabel];
+      socketData["message"][dataKey] = [dataLabel];
       //dispatch(postReadStatus());
-      channelRef.trigger("client-widget-message", formattedPayload);
+      channelRef.trigger("client-widget-message", socketData);
     }
   };
   return (

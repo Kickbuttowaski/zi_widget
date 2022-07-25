@@ -11,6 +11,7 @@ import {
   appendEndConvo,
   getChatEnd,
   getSocketLoader,
+  toggleSocketLoader,
 } from "../../../store/reducer/chatDataReducer";
 import { getSubscriptionInfo } from "../../../store/reducer/widgetInfoReducer";
 import {
@@ -47,8 +48,9 @@ export default function ChatMainBody() {
   }, []);
   useEffect(() => {
     if (subscriptionChannel != null && !isLoading) {
+      //connect pusher once /getMsg api is done
       initPusher(subscriptionChannel);
-      scrollRef.current.scrollIntoView();
+      scrollToNewMsg();
     }
   }, [isLoading]);
 
@@ -57,20 +59,24 @@ export default function ChatMainBody() {
       channelRef != null &&
       msgData.length &&
       msgData[msgData.length - 1].type === "text" &&
-      !isChatEnd
+      !isChatEnd &&
+      !isSocketLoading
     ) {
       //trigger client emit, whenever the last type is text and channelref is not null
+      dispatch(toggleSocketLoader(true))
       dispatch(postReadStatus());
       triggerClientEmit();
     }
-  }, [msgData, channelRef]);
+  }, [msgData, channelRef, isChatEnd, isSocketLoading]);
   const initPusher = ({ channel_name, userId }) => {
     const channel = pusher.subscribe(channel_name);
     channel.bind("pusher:subscription_succeeded", () => {
       //triggers can be used only after successful subscription
+      //updating channel in store
       dispatch(setChannelRef(channel));
       channel.bind("server-message", (data) => {
         dispatch(appendEndConvo(data));
+        dispatch(toggleSocketLoader(false))
         dispatch(postDeliveredStatus());
       });
     });
@@ -89,17 +95,21 @@ export default function ChatMainBody() {
       channelRef.trigger("client-widget-message", socketPayload);
     }
   };
-
+  const scrollToNewMsg = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+    }
+  };
   return (
-    <div className="h-4/5 rounded-b-xl bg-white relative z-2 py-4 px-4 chatmain__headerwrapper overflow-y-auto zi_scroll">
+    <div className="h-4/5 rounded-b-xl bg-white relative z-2 py-4 px-4 pb-12 chatmain__headerwrapper overflow-y-auto zi_scroll">
       {isLoading ? (
         <div>Loading...</div>
       ) : (
-        <div>
+        <div className="pb-4">
           {msgData.map((obj, i) => {
             {
-              if (msgData.length - 1 == i && scrollRef.current) {
-                scrollRef.current.scrollIntoView({ behavior: "smooth" });
+              if (msgData.length - 1 == i) {
+                scrollToNewMsg();
               }
               return <ChatHolder key={i} data={obj} />;
             }

@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import API from "../../lib/axios";
 import ENDPOINT from "../../data/endpoints";
-import { LS } from "../../utils/authHeaders";
 const initialState = {
   status: "idle",
   isLoading: true,
@@ -12,28 +11,48 @@ const initialState = {
   channelList: [],
   activeChannelId: null,
   chatObj: null,
-  socketLoader:false
+  socketLoader: false,
 };
 
 export const chatDataSlice = createSlice({
   name: "chatData",
   initialState,
   reducers: {
-    appendEndConvo: (state, action) => {
-      if(action.payload.end || action.payload.messages.type !== 'text' ){
-        state.socketLoader = false
-      }else{
-        state.socketLoader = true
+    restartConvo: (state, action) => {
+      let toJSON = { ...state.currChat[0] };
+      if ("button" in toJSON && "input" in toJSON) {
+        //if button/inputs exsists overwrite without concat
+        //to remove elements from UI
+        state.prevChat.push(...state.currChat);
       }
-      state.prevChat.push(...state.currChat)
+      state.currChat = [
+        {
+          text: "@" + state.chatObj.sender.name,
+          lead: true,
+          img: "https://staging-uploads.insent.ai/insentstaging/logo-insentstaging-1657874092041?1657874092120",
+        },
+      ];
+    },
+    appendEndConvo: (state, action) => {
+      let msgType = action.payload?.messages?.type || undefined;
+      if (action.payload.end || msgType !== "text") {
+        //to disable socket loader
+        state.socketLoader = false;
+      }
+      //appending new message to the curr array and merge prev + curr arr
+      state.prevChat.push(...state.currChat);
       state.currChat = action.payload.messages;
       state.chatObj = action.payload;
     },
     updateReply: (state, action) => {
       //state.prevChat.push(...state.currChat);
-      state.socketLoader = true
-      state.currChat = [action.payload]
+      //updating user response as current message
+      //will remove button from ui
+      state.socketLoader = true;
       state.currChat = [action.payload];
+    },
+    toggleSocketLoader: (state, action) => {
+      state.socketLoader = action.payload;
     },
   },
 
@@ -72,7 +91,8 @@ export const chatDataSlice = createSlice({
   },
 });
 
-export const { appendEndConvo, updateReply } = chatDataSlice.actions;
+export const { appendEndConvo, updateReply, restartConvo, toggleSocketLoader } =
+  chatDataSlice.actions;
 //DATA SELECTORS
 
 export const getLoadingState = (state, key = "isLoading") => {
@@ -95,13 +115,13 @@ export const getClientmsgSocketData = (state) => {
 export const getChannelListArr = (state) => {
   return state.chatData.channelList;
 };
-export const getChatEnd = (state)=>{
+export const getChatEnd = (state) => {
   if (state.chatData.chatObj === null) return false;
-  return state.chatData.chatObj.end
-}
-export const getSocketLoader = (state)=>{
-  return state.chatData.socketLoader
-}
+  return state.chatData.chatObj.end;
+};
+export const getSocketLoader = (state) => {
+  return state.chatData.socketLoader;
+};
 //API ACTION CREATORS
 export const getMsgs = createAsyncThunk(
   "chatData/getMsg",
