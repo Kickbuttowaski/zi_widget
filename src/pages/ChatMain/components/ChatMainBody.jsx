@@ -19,6 +19,7 @@ import {
   getChannelRef,
 } from "../../../store/reducer/pusherReducer";
 import ChatHolder from "./ChatHolder";
+import Loader from "../../../components/Loader/Loader";
 import { LS } from "../../../utils/authHeaders";
 const USER_ID = JSON.parse(LS.get("zi_config")).userId;
 const pusher = new Pusher("67bb469433cb732caa7a", {
@@ -105,7 +106,7 @@ export default function ChatMainBody() {
   return (
     <div className="h-4/5 rounded-b-xl bg-white relative z-2 pt-4 px-4 pb-0 chatmain__headerwrapper overflow-y-auto zi_scroll">
       {isLoading ? (
-        <div>Loading...</div>
+        <div ><Loader/></div>
       ) : (
         <div className="pb-4">
           {msgData.map((obj, i) => {
@@ -117,7 +118,7 @@ export default function ChatMainBody() {
             }
           })}
           {isSocketLoading && (
-            <p className="text-sm text-gray-400 text-left ml-8">loading...</p>
+            <p className="text-sm text-gray-400 text-left ml-8"><Loader position="start"/></p>
           )}
           <div ref={scrollRef}></div>
         </div>
