@@ -5,6 +5,7 @@ import { getBotInfo } from "../../../store/reducer/widgetInfoReducer";
 import {
   getClientmsgSocketData,
   updateReply,
+  toggleSocketLoader
 } from "../../../store/reducer/chatDataReducer";
 import { epochToReadable } from "../../../utils/timeFormatter";
 import { chatBubbleCSS } from "../../../utils/dynamicCSS";
@@ -65,6 +66,7 @@ const TextData = ({ data }) => {
   );
 };
 const ChatInput = ({ data }) => {
+  const dispatch = useDispatch()
   const [isDisabled, setDisabled] = useState(false);
   const [error, setError] = useState(null);
   const channelRef = useSelector((state) => getChannelRef(state));
@@ -75,15 +77,19 @@ const ChatInput = ({ data }) => {
     let dataKey = ele.getAttribute("data-key");
     let dataValue = ele.value;
     if (ele && dataKey) {
-      if (validateInput(dataValue, dataKey)) {
+      let { status, message } = validateInput(dataValue, inputAttr);
+      if(!status){
+        setError(message);
+        return
+      }
+      if (status) {
+        dispatch(toggleSocketLoader(true))
         socketData["message"][dataKey] = dataValue;
         channelRef.trigger("client-widget-message", socketData);
         ele.removeAttribute("id");
         setDisabled(true);
         setError(null);
-      } else {
-        setError(`please enter a valid ${dataKey}`);
-      }
+      } 
     }
   };
   return (

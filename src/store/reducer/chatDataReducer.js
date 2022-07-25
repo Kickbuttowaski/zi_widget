@@ -34,11 +34,11 @@ export const chatDataSlice = createSlice({
       ];
     },
     appendEndConvo: (state, action) => {
-      let msgType = action.payload?.messages?.type || undefined;
-      if (action.payload.end || msgType !== "text") {
-        //to disable socket loader
-        state.socketLoader = false;
-      }
+      // let msgType = action.payload?.messages?.type || undefined;
+      // if (action.payload.end || msgType !== "text") {
+      //   //to disable socket loader
+      //   state.socketLoader = false;
+      // }
       //appending new message to the curr array and merge prev + curr arr
       state.prevChat.push(...state.currChat);
       state.currChat = action.payload.messages;

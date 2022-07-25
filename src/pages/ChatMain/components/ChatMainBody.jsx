@@ -101,7 +101,7 @@ export default function ChatMainBody() {
     }
   };
   return (
-    <div className="h-4/5 rounded-b-xl bg-white relative z-2 py-4 px-4 pb-12 chatmain__headerwrapper overflow-y-auto zi_scroll">
+    <div className="h-4/5 rounded-b-xl bg-white relative z-2 pt-4 px-4 pb-0 chatmain__headerwrapper overflow-y-auto zi_scroll">
       {isLoading ? (
         <div>Loading...</div>
       ) : (
