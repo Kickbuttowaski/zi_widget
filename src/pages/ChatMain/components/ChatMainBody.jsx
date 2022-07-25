@@ -97,7 +97,9 @@ export default function ChatMainBody() {
   };
   const scrollToNewMsg = () => {
     if (scrollRef.current) {
-      scrollRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+      setTimeout(() => {
+        scrollRef.current.scrollIntoView({ behaviour: "smooth", block: "end" });
+      }, 50);
     }
   };
   return (
@@ -117,9 +119,9 @@ export default function ChatMainBody() {
           {isSocketLoading && (
             <p className="text-sm text-gray-400 text-left ml-8">loading...</p>
           )}
+          <div ref={scrollRef}></div>
         </div>
       )}
-      <div ref={scrollRef}></div>
     </div>
   );
 }
