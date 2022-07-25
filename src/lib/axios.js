@@ -3,7 +3,6 @@ import { getProjectKey, getUserId } from "../utils/authHeaders";
 //added hardcoded values for testing
 const AXIOS_CONFIG = {
   baseURL: `https://insentstaging.api.insent.ai`,
- 
 };
 // headers: {
 //   // Accept: "application/json",
@@ -29,6 +28,15 @@ axiosClient.interceptors.request.use(
     return config;
   },
   function (error) {
+    return Promise.reject(error);
+  }
+);
+axios.interceptors.response.use(
+  function (response) {
+    return response;
+  },
+  function (error) {
+    console.log(error, "API ERROR");
     return Promise.reject(error);
   }
 );
