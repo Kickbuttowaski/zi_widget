@@ -26,7 +26,7 @@ export default function ChatListBody() {
     }
   };
   return (
-    <div className="h-full border-b-8 border-primary rounded-b-xl pt-1 px-8 chatlist__headerwrapper overflow-y-auto">
+    <div className="h-full border-b-8 border-primary rounded-b-xl pt-1 px-8 chatlist__headerwrapper overflow-y-auto zi_scroll">
       <p className="text-left text-primary_text mb-2 text-xs">
         your conversations
       </p>

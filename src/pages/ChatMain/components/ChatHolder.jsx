@@ -1,15 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getChannelRef } from "../../../store/reducer/pusherReducer";
 import { getBotInfo } from "../../../store/reducer/widgetInfoReducer";
 import {
   getClientmsgSocketData,
-  postDeliveredStatus,
-  postReadStatus,
   updateReply,
 } from "../../../store/reducer/chatDataReducer";
 import { epochToReadable } from "../../../utils/timeFormatter";
 import { chatBubbleCSS } from "../../../utils/dynamicCSS";
+import { validateInput } from "../../../utils/validation";
 export default function ChatHolder({ data }) {
   const renderChat = () => {
     //based on msg type return components
@@ -66,42 +65,40 @@ const TextData = ({ data }) => {
   );
 };
 const ChatInput = ({ data }) => {
+  const [isDisabled, setDisabled] = useState(false);
+  const [error, setError] = useState(null);
   const dispatch = useDispatch();
   const channelRef = useSelector((state) => getChannelRef(state));
   const socketData = useSelector((state) => getClientmsgSocketData(state));
   let inputAttr = data[0];
-  const handleSubmit = (e)=>{
-    //e.preventDefault()
-    let ele = document.getElementById('zi_input')
-    let dataKey = ele.getAttribute("data-key")
-    let dataValue = ele.value
-    if(ele && dataKey){
-      dispatch(
-        updateReply({
-          key: dataKey,
-          text: dataValue,
-          lead: true,
-          img: "https://staging-uploads.insent.ai/insentstaging/logo-insentstaging-1657874092041?1657874092120",
-        })
-      );
-      let formattedPayload = { ...socketData };
-      formattedPayload["message"][dataKey] = dataValue;
-      channelRef.trigger("client-widget-message", formattedPayload);
-      // dispatch(postReadStatus());
-      // dispatch(postDeliveredStatus())
+  const handleSubmit = (e) => {
+    let ele = document.getElementById("zi_input");
+    let dataKey = ele.getAttribute("data-key");
+    let dataValue = ele.value;
+    if (ele && dataKey) {
+      if (validateInput(dataValue,dataKey)) {
+        let formattedPayload = { ...socketData };
+        formattedPayload["message"][dataKey] = dataValue;
+        channelRef.trigger("client-widget-message", formattedPayload);
+        ele.removeAttribute("id");
+        setDisabled(true);
+        setError(null);
+      } else {
+        setError(`please enter a valid ${dataKey}`);
+      }
     }
-  
-  }
+  };
   return (
     <div className={chatBubbleCSS(false)}>
       <div className="flex gap-4 items-center mb-4 ml-10 w-full">
-        <p
+        <div
           className={`${chatBubbleCSS(
             false,
             "wing_direction"
           )} m-0 rounded-xl  px-8 py-2  w-4/5`}
         >
           <p className="font-bold text-md text-left">{inputAttr.name}</p>
+          {error != null && <p className="text-red-400 text-sm text-left">{error}</p>}
           <div className="flex h-10 bg-white border-gray-600 rounded-md pl-4">
             <input
               placeholder={`Enter your ${inputAttr.name.toLowerCase()}`}
@@ -111,14 +108,16 @@ const ChatInput = ({ data }) => {
               data-key={inputAttr.key}
               id="zi_input"
             />
-            <button
-              onClick={handleSubmit}
-              className="outline-none border-none bg-primary pr-2 pl-2 rounded-tr-md rounded-br-md text-white"
-            >
-              send
-            </button>
+            {!isDisabled && (
+              <button
+                onClick={handleSubmit}
+                className="outline-none border-none bg-primary pr-2 pl-2 rounded-tr-md rounded-br-md text-white"
+              >
+                send
+              </button>
+            )}
           </div>
-        </p>
+        </div>
       </div>
     </div>
   );

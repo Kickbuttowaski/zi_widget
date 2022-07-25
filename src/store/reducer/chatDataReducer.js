@@ -12,6 +12,7 @@ const initialState = {
   channelList: [],
   activeChannelId: null,
   chatObj: null,
+  socketLoader:false
 };
 
 export const chatDataSlice = createSlice({
@@ -19,12 +20,18 @@ export const chatDataSlice = createSlice({
   initialState,
   reducers: {
     appendEndConvo: (state, action) => {
+      if(action.payload.end || action.payload.messages.type !== 'text' ){
+        state.socketLoader = false
+      }else{
+        state.socketLoader = true
+      }
       state.prevChat.push(...state.currChat)
       state.currChat = action.payload.messages;
       state.chatObj = action.payload;
     },
     updateReply: (state, action) => {
       //state.prevChat.push(...state.currChat);
+      state.socketLoader = true
       state.currChat = [action.payload]
       state.currChat = [action.payload];
     },
@@ -91,6 +98,9 @@ export const getChannelListArr = (state) => {
 export const getChatEnd = (state)=>{
   if (state.chatData.chatObj === null) return false;
   return state.chatData.chatObj.end
+}
+export const getSocketLoader = (state)=>{
+  return state.chatData.socketLoader
 }
 //API ACTION CREATORS
 export const getMsgs = createAsyncThunk(

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Pusher from "pusher-js";
 import {
@@ -9,7 +9,8 @@ import {
   postDeliveredStatus,
   getClientmsgSocketData,
   appendEndConvo,
-  getChatEnd
+  getChatEnd,
+  getSocketLoader,
 } from "../../../store/reducer/chatDataReducer";
 import { getSubscriptionInfo } from "../../../store/reducer/widgetInfoReducer";
 import {
@@ -28,11 +29,14 @@ const pusher = new Pusher("67bb469433cb732caa7a", {
   },
 });
 export default function ChatMainBody() {
+  const scrollRef = useRef(null);
+  const prevTimestamp = useRef(null);
+  const isSocketLoading = useSelector((state) => getSocketLoader(state));
   const isLoading = useSelector((state) => getLoadingState(state));
   const msgData = useSelector((state) => getMsgArr(state));
   const channelRef = useSelector((state) => getChannelRef(state));
   const socketPayload = useSelector((state) => getClientmsgSocketData(state));
-  const isChatEnd = useSelector(state=>getChatEnd(state))
+  const isChatEnd = useSelector((state) => getChatEnd(state));
   const dispatch = useDispatch(useDispatch);
   const subscriptionChannel = useSelector((state) =>
     getSubscriptionInfo(state)
@@ -44,6 +48,7 @@ export default function ChatMainBody() {
   useEffect(() => {
     if (subscriptionChannel != null && !isLoading) {
       initPusher(subscriptionChannel);
+      scrollRef.current.scrollIntoView();
     }
   }, [isLoading]);
 
@@ -54,20 +59,17 @@ export default function ChatMainBody() {
       msgData[msgData.length - 1].type === "text" &&
       !isChatEnd
     ) {
+      //trigger client emit, whenever the last type is text and channelref is not null
       dispatch(postReadStatus());
       triggerClientEmit();
     }
-    
   }, [msgData, channelRef]);
   const initPusher = ({ channel_name, userId }) => {
     const channel = pusher.subscribe(channel_name);
     channel.bind("pusher:subscription_succeeded", () => {
       //triggers can be used only after successful subscription
       dispatch(setChannelRef(channel));
-      //console.log(socketPayload, "socketPayload");
-      //channel.trigger("client-widget-message", socketPayload);
       channel.bind("server-message", (data) => {
-        console.log(data, "Server reply");
         dispatch(appendEndConvo(data));
         dispatch(postDeliveredStatus());
       });
@@ -81,19 +83,33 @@ export default function ChatMainBody() {
     pusher.connection.bind("connected", (data) => {});
   };
   const triggerClientEmit = () => {
-    channelRef.trigger("client-widget-message", socketPayload);
+    if (prevTimestamp.current != socketPayload.message.lastMessageTimeStamp) {
+      //condition added to prevent multiple socket call for same timestamp
+      prevTimestamp.current = socketPayload.message.lastMessageTimeStamp;
+      channelRef.trigger("client-widget-message", socketPayload);
+    }
   };
+
   return (
-    <div className="h-4/5 rounded-b-xl bg-white relative z-2 py-4 px-4 chatmain__headerwrapper overflow-y-auto">
+    <div className="h-4/5 rounded-b-xl bg-white relative z-2 py-4 px-4 chatmain__headerwrapper overflow-y-auto zi_scroll">
       {isLoading ? (
         <div>Loading...</div>
       ) : (
         <div>
           {msgData.map((obj, i) => {
-            return <ChatHolder key={i} data={obj} />;
+            {
+              if (msgData.length - 1 == i && scrollRef.current) {
+                scrollRef.current.scrollIntoView({ behavior: "smooth" });
+              }
+              return <ChatHolder key={i} data={obj} />;
+            }
           })}
+          {isSocketLoading && (
+            <p className="text-sm text-gray-400 text-left ml-8">loading...</p>
+          )}
         </div>
       )}
+      <div ref={scrollRef}></div>
     </div>
   );
 }

@@ -50,3 +50,15 @@ code {
     transform: translateY(0px);
   }
 }
+.zi_scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(73, 84, 101, 0.15);
+  opacity: 0.15;
+  border-radius: 30px;
+  width: 6px;
+}
+.zi_scroll::-webkit-scrollbar{
+  width: 6px;
+}
+.zi_scroll::-webkit-scrollbar-track-piece{
+  background-color: transparent;
+}
