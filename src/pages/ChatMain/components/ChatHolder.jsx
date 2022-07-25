@@ -6,6 +6,7 @@ import {
   getClientmsgSocketData,
   postDeliveredStatus,
   postReadStatus,
+  updateReply,
 } from "../../../store/reducer/chatDataReducer";
 import { epochToReadable } from "../../../utils/timeFormatter";
 import { chatBubbleCSS } from "../../../utils/dynamicCSS";
@@ -18,6 +19,8 @@ export default function ChatHolder({ data }) {
       return <ChatButtons buttons={data.buttons} />;
     } else if ("newSession" in data) {
       return <TimeStamp time={data.time} />;
+    } else if ("input" in data) {
+      return <ChatInput data={data.input} />;
     }
   };
   return renderChat();
@@ -62,7 +65,64 @@ const TextData = ({ data }) => {
     </div>
   );
 };
-
+const ChatInput = ({ data }) => {
+  const dispatch = useDispatch();
+  const channelRef = useSelector((state) => getChannelRef(state));
+  const socketData = useSelector((state) => getClientmsgSocketData(state));
+  let inputAttr = data[0];
+  const handleSubmit = (e)=>{
+    //e.preventDefault()
+    let ele = document.getElementById('zi_input')
+    let dataKey = ele.getAttribute("data-key")
+    let dataValue = ele.value
+    if(ele && dataKey){
+      dispatch(
+        updateReply({
+          key: dataKey,
+          text: dataValue,
+          lead: true,
+          img: "https://staging-uploads.insent.ai/insentstaging/logo-insentstaging-1657874092041?1657874092120",
+        })
+      );
+      let formattedPayload = { ...socketData };
+      formattedPayload["message"][dataKey] = dataValue;
+      channelRef.trigger("client-widget-message", formattedPayload);
+      // dispatch(postReadStatus());
+      // dispatch(postDeliveredStatus())
+    }
+  
+  }
+  return (
+    <div className={chatBubbleCSS(false)}>
+      <div className="flex gap-4 items-center mb-4 ml-10 w-full">
+        <p
+          className={`${chatBubbleCSS(
+            false,
+            "wing_direction"
+          )} m-0 rounded-xl  px-8 py-2  w-4/5`}
+        >
+          <p className="font-bold text-md text-left">{inputAttr.name}</p>
+          <div className="flex h-10 bg-white border-gray-600 rounded-md pl-4">
+            <input
+              placeholder={`Enter your ${inputAttr.name.toLowerCase()}`}
+              type={inputAttr.type}
+              name={inputAttr.name}
+              className="h-10 border w-full outline-none border-none"
+              data-key={inputAttr.key}
+              id="zi_input"
+            />
+            <button
+              onClick={handleSubmit}
+              className="outline-none border-none bg-primary pr-2 pl-2 rounded-tr-md rounded-br-md text-white"
+            >
+              send
+            </button>
+          </div>
+        </p>
+      </div>
+    </div>
+  );
+};
 const ChatButtons = ({ buttons }) => {
   // need to add id's for each button
   const dispatch = useDispatch();
@@ -73,9 +133,17 @@ const ChatButtons = ({ buttons }) => {
 
     if (dataKey) {
       let dataLabel = e.target.getAttribute("data-label");
+      dispatch(
+        updateReply({
+          key: dataKey,
+          text: dataLabel,
+          lead: true,
+          img: "https://staging-uploads.insent.ai/insentstaging/logo-insentstaging-1657874092041?1657874092120",
+        })
+      );
       let formattedPayload = { ...socketData };
       formattedPayload["message"][dataKey] = [dataLabel];
-      console.log(formattedPayload, "formattedPayload");
+      //dispatch(postReadStatus());
       channelRef.trigger("client-widget-message", formattedPayload);
     }
   };

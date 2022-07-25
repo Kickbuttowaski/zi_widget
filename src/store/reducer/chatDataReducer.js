@@ -19,12 +19,17 @@ export const chatDataSlice = createSlice({
   initialState,
   reducers: {
     appendEndConvo: (state, action) => {
- 
-      state.prevChat.push(...state.chatObj.messages)
-      state.currChat = action.payload.messages
-      state.chatObj = action.payload
+      state.prevChat.push(...state.currChat)
+      state.currChat = action.payload.messages;
+      state.chatObj = action.payload;
+    },
+    updateReply: (state, action) => {
+      //state.prevChat.push(...state.currChat);
+      state.currChat = [action.payload]
+      state.currChat = [action.payload];
     },
   },
+
   extraReducers(builder) {
     builder
       .addCase(getMsgs.pending, (state, action) => {
@@ -38,7 +43,7 @@ export const chatDataSlice = createSlice({
         state.currChat = action.payload.messages || [];
         state.prevChat = action.payload.prevMessages || [];
         state.activeChannelId = action.payload.channelId;
-        state.user_id = action.payload.user_id
+        state.user_id = action.payload.user_id;
         state.isLoading = false;
       })
       .addCase(getMsgs.rejected, (state, action) => {
@@ -60,7 +65,7 @@ export const chatDataSlice = createSlice({
   },
 });
 
-export const { appendEndConvo } = chatDataSlice.actions;
+export const { appendEndConvo, updateReply } = chatDataSlice.actions;
 //DATA SELECTORS
 
 export const getLoadingState = (state, key = "isLoading") => {
@@ -69,10 +74,7 @@ export const getLoadingState = (state, key = "isLoading") => {
 export const getMsgArr = (state) => {
   if (state.chatData.chatObj === null) return [];
 
-  return [
-    ...state.chatData.prevChat,
-    ...state.chatData.currChat,
-  ];
+  return [...state.chatData.prevChat, ...state.chatData.currChat];
 };
 export const getClientmsgSocketData = (state) => {
   if (state.chatData.chatObj === null) return 0;
@@ -80,21 +82,25 @@ export const getClientmsgSocketData = (state) => {
   return {
     channelName: channelId,
     message: { lastMessageTimeStamp: messageTimestamp },
-    senderId:state.chatData.user_id
+    senderId: state.chatData.user_id,
   };
 };
 export const getChannelListArr = (state) => {
   return state.chatData.channelList;
 };
+export const getChatEnd = (state)=>{
+  if (state.chatData.chatObj === null) return false;
+  return state.chatData.chatObj.end
+}
 //API ACTION CREATORS
 export const getMsgs = createAsyncThunk(
   "chatData/getMsg",
   async (cid = undefined, { getState }) => {
     cid = cid === undefined ? getState().widgetConfig.config.channelId : cid;
-    let uid = getState().widgetConfig.config.user.id
+    let uid = getState().widgetConfig.config.user.id;
     let formattedURL = ENDPOINT.GET_MESSAGE + cid;
     const response = await API.get(formattedURL);
-    response.data['user_id'] = uid
+    response.data["user_id"] = uid;
     return response.data;
   }
 );
